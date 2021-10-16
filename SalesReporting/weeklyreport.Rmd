@@ -1,0 +1,97 @@
+---
+title: "Weekly Report"
+author: "Robert Manni"
+date: "15  OCT 2021"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+```{r, include=FALSE}
+#Libraries
+#Libraries
+library(tidyverse)
+library(lubridate)
+library(bslib)
+
+# Static Lines of code
+
+data = read.csv(choose.files(), na.strings = c("")) # Opens file explore to choose csv file
+
+# Check the NA's before running:
+
+data %>% 
+  filter(!complete.cases(data))
+
+
+data_tidy = data %>% 
+  mutate(QUOTE.DATE = mdy(QUOTE.DATE)) %>% 
+  mutate(PO.DATE = mdy(PO.DATE)) %>% 
+  mutate(INVOICE.DATE = mdy(INVOICE.DATE)) %>% 
+  mutate(CONVERTED = PO.DATE - QUOTE.DATE) %>% 
+  mutate(CLOSED = INVOICE.DATE - PO.DATE) %>% 
+  select(-CONVERSION.RATE, -CLOSED.RATE) %>% 
+  drop_na()
+
+avg_converted = signif(mean(data_tidy$CONVERTED), 3)
+avg_closed = signif(mean(data_tidy$CLOSED), 3)
+
+
+week_PRODUCT1 = data_tidy %>% 
+  select(Cat.No., QTY, ID, CLIENT, COUNTRY, QUOTE.DATE) %>% 
+  filter(QUOTE.DATE >= today("GMT")-days(7)) %>% 
+  filter(Cat.No.== "ABC")
+
+week_PRODUCT2 = data_tidy %>% 
+  select(Cat.No., QTY, ID, CLIENT, COUNTRY, QUOTE.DATE) %>% 
+  filter(QUOTE.DATE >= today("GMT")-days(7)) %>% 
+  filter(Cat.No.== "DEF")
+
+
+week_PRODUCT3 = data_tidy %>%
+  select(Cat.No., QTY, ID, CLIENT, COUNTRY, QUOTE.DATE) %>%
+  filter(QUOTE.DATE >= today("GMT")-days(7)) %>%
+  filter(Cat.No.== "GHI")
+```
+
+For week ending in `r today()`
+
+**Quotes by Product**
+
+```{r, echo=FALSE}
+knitr::kable(week_PRODUCT1, caption = "Product ABC This week",
+             col.names = c("Product", "Quantity", "ID", "Client", "Country", "Quote Date"),
+             align = "c")
+```
+\pagebreak
+
+```{r, echo=FALSE}
+knitr::kable(week_PRODUCT2, caption = "Product DEF This week",
+             col.names = c("Product", "Quantity", "ID", "Client", "Country", "Quote Date"),
+             align = "c")
+```
+
+```{r, echo=FALSE}
+knitr::kable(week_PRODUCT3, caption = "Product GHI This week",
+             col.names = c("Product", "Quantity", "ID", "Client", "Country", "Quote Date"),
+             align = "c")
+```
+
+
+
+**Total Quantities in Quotes by Product**
+
+```{r, echo=FALSE}
+#Another option:
+Totals = data_tidy %>% 
+group_by(Cat.No.) %>% 
+summarize(Total = scales::dollar(sum(QTY)), Orders = n())
+
+knitr::kable(Totals, align = 'c',
+caption = "Total Quantities Quoted For Each Product This Quarter")
+
+
+```
+
+Average close rate for all orders is `r avg_closed` days. 

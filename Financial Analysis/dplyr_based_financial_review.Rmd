@@ -1,0 +1,141 @@
+---
+title: "Financial Analyst"
+author: "Robert Manni"
+date: "8/24/2021"
+output: word_document
+---
+
+# Financial Data Review using TidyVerse
+
+These data are from the second course on Udemy tuaght by Kiril Eremenko on R programming with the focus on data science methods. This document will demonstrate how I used dplyr to accomplish the original content but with cleaner code and methodology to explore the dataset and provide a final report that answers the following:
+
+### 1. Finding missing or NA values in the data. 
+### 2. subsetting missing values using methods described later in this document. 
+### 3. Analysis and graphical representation. 
+
+# Loading The Tidyverse:
+
+```{r}
+# install.packages("tidyverse") # Run if not already installed.
+
+library(tidyverse)
+library(skimr)
+
+```
+
+# Load the Data:
+
+```{r, ECHO = FALSE}
+wd = getwd()
+setwd(wd)
+```
+
+```{r}
+data = read.csv(choose.files(), na.strings = c("")) # Choose file and makes missing values NA's so they're easy to work with.
+
+# Inspect the data
+
+# head(data) # Checks top few rows
+# tail(data) # Checks the bottom few rows
+# str(data) # checks the class of each variable (column)
+
+#Or use skimr:
+skim(data)
+```
+
+Inspecting the data allows us to immediately see the format of the data.
+ - Is it in Tidy format? 
+ - Do you see missing observations?
+ 
+ ## Important Findings:
+1. 1 observation has a missing Inception date
+2. 2 observations have missing Employees data
+3. 2 observations have missing Revenue, Expenses, and Profit data
+4. 1 observation has missing Growth. 
+
+We will need to address each of these parts will also need to employ the right action for dealing with missing data. It is important to mention that some of these might require consulting a supervisor or the owner of the dataset before performing some of the actions. 
+
+Using the str() function we also can see that we have other things we'll likely need to work with.
+ - Inception is an integer, but we won't be doing any mathematical operations with the year.
+ - Notice revenue, expenses and growth are all characters. This means we'll need to convert these in order to use mathematical operations with these columns. 
+ 
+ 
+ Let's deal with all those using dplyr. Below I have also changed the missing values. Using dplyr I tested each line separately with the data. dplyr works really fast so I can play with it and find out what works and what doesn't. 
+ 
+# Finding Missing Values:
+I type the code below after trying each line of code above to determine what still needs to be fixed. If it fixes it I keep and move onto the next line. 
+```{r}
+data %>% # not assigning the data yet. You can play around and see what you like before you assign a vector. 
+  filter(!complete.cases(data)) # Returns all rows with incomplete data fields. 
+```
+
+Now, I'll work through each NA value and each action is shown:
+```{r}
+data2.0 = data %>% 
+  mutate(Expenses = gsub("Dollars", "", Expenses), # Removed "Dollars".
+         Expenses = gsub(",", "", Expenses), # Removed commas and the space.
+         Expenses = str_squish(Expenses),
+         Expenses = as.numeric(Expenses), # Changed to integer (hopefully. Will need to check later.).
+         Revenue = gsub("\\$", "", Revenue), # used esscape sequence '\\' to remove '$'. 
+         Revenue = gsub(",", "", Revenue),# Removed commas and the space.
+         Revenue = as.numeric(Revenue), # Makes Revenue MATHEMATICAL MAN!
+         Profit = as.numeric(Profit), # Makes Profits MATHEMAICAL MAN!
+         Growth = gsub("%", "", Growth), # Removed % symbol from values. 
+         Growth = as.numeric(Growth)) %>% # Makes Growth MATHEMATICAL MAN!
+  mutate(State = ifelse(City == 'San Francisco', 'CA', State), # NA value in State is CA
+         State = ifelse(City == 'New York', 'NY', State), # NA value in State is NY
+         Industry = ifelse(Name == 'Techline', 'IT Services', Industry), #NA value in Industry is IT Services
+         Industry = ifelse(Name == 'Cityace', 'Retail', Industry), #NA value in Industry is Retail
+         Expenses = ifelse(is.na(Expenses), Revenue-Profit, Expenses), # Calculated what Expenses are from existing columns. 
+         Inception = ifelse(Name == 'Lathotline', '2011', Inception)) %>%  # Made the inception date 2011 for the NA value.
+  drop_na() #drops NA's for the two construction columns that I cannot infer data for.
+  
+  
+
+# # Recheck the data:
+# head(data2.0, 25)
+# tail(data2.0, 25)
+# str(data2.0)
+
+# Or use skimr
+skim(data2.0)
+```
+
+# Visualization:
+
+The the dataset is not ready to be used for visual analysis. We have been asked to make three graphs:
+
+
+##1. A scatter plot by industry showing revenue, expenses and profit.
+```{r}
+plot = ggplot(data = data2.0) # Assign data to plot to a veriable. I just like that. 
+
+plot + geom_point(aes(x = Revenue, y = Expenses,
+                      size = Profit,
+                      color = Industry))  +
+  labs(title = "Revenue by Expense Growth",
+       subtitle = "By Insdusry",
+       caption = "Profit is inverseley related to Expenses.")
+
+```
+
+
+##2. A scatter plot by industry trends for expenses ~ revenue relationship.
+
+```{r}
+plot + geom_point(aes(x = Expenses, y = Revenue,
+                      color = Industry)) +
+  geom_smooth(aes(x = Expenses, y = Revenue,
+                      color = Industry),
+              fill = NA, size  = 1.2) + 
+  labs(title = "Relationship of Revenue vs Expenses",
+       caption = "Government Services seems pretty steady!")
+```
+Although I could have saved some lines here by making the aes() saved into the plot, I chose not to for the sake of being able to clearly see what I am graphing. So, it is redundant for learning purposes. 
+
+##3. A box plot showing growht by industry. 
+```{r}
+plot + geom_boxplot(aes(x = Industry, y = Growth, 
+                        color = Industry))
+```
+

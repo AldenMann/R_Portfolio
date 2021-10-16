@@ -1,0 +1,121 @@
+---
+title: "Financial Report"
+author: "Robert Manni"
+date: "10/9/2021"
+output:
+  html_document:
+    theme:
+      bootswatch: solar
+    df_print: paged
+  word_document: default
+
+---
+
+```{r, include=FALSE}
+# This chunk contains the complete code used to generate the report for this Rmarkdown report excluding graphical analysis. 
+
+library(tidyverse)
+library(skimr)
+library(scales)
+library(bslib) # For html reports
+
+# Details:
+
+data = read.csv(choose.files(), na.strings = c(""))
+
+# Inspect the data
+
+# head(data) # Checks top few rows
+# tail(data) # Checks the bottom few rows
+# str(data) # checks the class of each variable (column)
+
+#Or use skimr:
+#skim(data)
+
+data2.0 = data %>% 
+  mutate(Expenses = gsub("Dollars", "", Expenses), # Removed "Dollars".
+         Expenses = gsub(",", "", Expenses), # Removed commas and the space.
+         Expenses = str_squish(Expenses),
+         Expenses = as.numeric(Expenses), # Changed to integer (hopefully. Will need to check later.).
+         Revenue = gsub("\\$", "", Revenue), # used esscape sequence '\\' to remove '$'. 
+         Revenue = gsub(",", "", Revenue),# Removed commas and the space.
+         Revenue = as.numeric(Revenue), # Makes Revenue MATHEMATICAL MAN!
+         Profit = as.numeric(Profit), # Makes Profits MATHEMAICAL MAN!
+         Growth = gsub("%", "", Growth), # Removed % symbol from values. 
+         Growth = as.numeric(Growth)) %>% # Makes Growth MATHEMATICAL MAN!
+  mutate(State = ifelse(City == 'San Francisco', 'CA', State), # NA value in State is CA
+         State = ifelse(City == 'New York', 'NY', State), # NA value in State is NY
+         Industry = ifelse(Name == 'Techline', 'IT Services', Industry), #NA value in Industry is IT Services
+         Industry = ifelse(Name == 'Cityace', 'Retail', Industry), #NA value in Industry is Retail
+         Expenses = ifelse(is.na(Expenses), Revenue-Profit, Expenses), # Calculated what Expenses are from existing columns. 
+         Inception = ifelse(Name == 'Lathotline', '2011', Inception)) %>%  # Made the inception date 2011 for the NA value.
+  drop_na() #drops NA's for the two construction columns that I cannot infer data for.
+
+# Verify data is tidy:
+#skim(data)
+
+
+
+
+```
+
+# Scope
+
+This report is to elucidate from the data the trends between different industries and the relationship between growth, profit and overall revenue in these different industries from a dataset of 500 companies. 
+
+## Deliverables:
+1. A graph displaying revenue, expenses and profit by industry. 
+2. A graphical representation of the relationship between expenses and revenue by industry. 
+3. A graphical representation of growth by industry. 
+
+# Results
+
+## Overview:
+
+```{r, echo=FALSE}
+plot = ggplot(data = data2.0) # Assign data to plot to a veriable. I just like that. 
+
+plot + geom_point(aes(x = Revenue, y = Expenses,
+                      size = Profit,
+                      color = Industry))  +
+  labs(title = "Revenue by Expense Growth",
+       subtitle = "By Insdusry",
+       caption = "Profit is inversely related to Expenses.") +
+  scale_x_continuous(NULL,
+                     labels = label_dollar(),
+                     guide = guide_axis(angle = 45)) +
+  scale_y_continuous(NULL,
+                     labels = label_dollar())
+```
+
+## Relationship of Revenue Growth to Expenses by Industry
+
+```{r, echo=FALSE}
+plot + geom_point(aes(x = Expenses, y = Revenue,
+                      color = Industry)) +
+  geom_smooth(aes(x = Expenses, y = Revenue,
+                      color = Industry),
+              fill = NA, size  = 1.2) + 
+  labs(title = "Relationship of Revenue vs Expenses",
+       caption = "Government Services seems pretty steady!") +
+  scale_x_continuous(NULL,
+                     breaks = breaks_extended(n = 7),
+                     labels = scales::label_dollar(),
+                     guide = guide_axis(angle = 45)) +
+  scale_y_continuous(NULL,
+                     breaks = breaks_extended(n = 7),
+                     labels = scales::label_dollar(),)
+  
+```
+
+## Overall Growth by Industry
+
+```{r, echo=FALSE}
+plot + geom_boxplot(aes(x = Industry, y = Growth, 
+                        color = Industry)) +
+  labs(title = "Growth by Industry",
+       y = "Growth (%)") +
+  scale_x_discrete(NULL,
+                   guide = guide_axis(angle = 45))
+```
+
