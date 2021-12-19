@@ -1,0 +1,242 @@
+---
+title: "Palmer Penguins"
+author: "Robert Manni"
+date: "12/17/2021"
+output: 
+    html_document:
+      theme:
+        bootswatch: cerulean
+    df_print: paged
+---
+
+# Adventures in Palmer Penguins Data Set
+## Antarctic Discovery for Google Analytics Capstone
+
+# Step 1 | Ask
+
+  The researchers at Palmer Station Antarctica have set out to collect data about 3 major Antarctic penguin species; adelie, chinstrap and gentoo. The researchers have collected various quantitatie measurements about the penguins including flipper length, bill depth and bill length among other data points such a sex and island. 
+  
+  The researchers would like to obtain some insight from this data. They have tasked you, the reader, with gaining the following insight about the palmer penguin dataset:
+  
+  1. Graphically represent the relationship between body mass and flipper length by sex and species. 
+  2. Graphically represent the relationship between bill depth and bill lengthe by sex and species. 
+  
+# Step 2 & 3| Prepare and Process for Analysis:
+
+  The Palmer penguin data set has several columns, but for our analysis we'll only need certain columns. First we'll load the libraries we'll be using to explore the data from the tidyverse and the dataset palmerpenguins. 
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+library(bslib)
+```
+
+## Explore the Date and clean
+
+```{r}
+data = palmerpenguins::penguins %>% drop_na() # assign data and drop NA's, since we'll likely not be able to interpolate the data. 
+
+head(data) # head and tail to inspect quickly
+tail(data)
+
+glimpse(data) # To see the columns and data types we'll be working with. 
+colnames(data) # Quickly reference column nsames for selection. 
+```
+
+Confirming that we do not see any errors or potential complications to our data that require cleaning, we can select the columns we would like to use for our analysis: 
+
+```{r}
+# We can select the data that we'll use for both questions:
+# Island and Year are not required to answer our questions, so we'll select all other columns to work with:
+
+data_penguins = data %>% 
+  select(-island, -year)
+
+glimpse(data_penguins) # glimpse again or use colnames(data_penguis) to confirm the removal of the two columns. 
+
+```
+# Step 4 | Analyze
+
+Now, we will analyze the data through graphical representation. We'll use ggplot2 to accomplish our goals. 
+
+## Question 1 | Flipper length as a relation to Body Mass by Species and Sex
+```{r, echo=FALSE}
+# Flipper length ~ Body Mass by Species and Sex
+plot_1 = ggplot() + 
+  geom_point(data = data_penguins, 
+             aes(x = body_mass_g, y = flipper_length_mm, 
+                 color = sex)) +
+  facet_grid(~species) +
+  labs(title = "Antarctic Penguin Flipper Lengths by Body Mass", subtitle = "A multiple species analysis") + 
+  xlab("Body Mass (g)") +
+  ylab("Flipper Length (mm)")
+
+plot_1
+```
+
+### Observations:
+  From the data we can see that there is a correlation between the overall mass of the penguin and flipper length acrross species. Furthermore, males on average show longer flipper length to total body mass. The summary of these observations can be seen in the table below:
+  
+```{r, echo=FALSE}
+table_1_M = data_penguins %>% 
+  filter(sex == "male") %>% 
+  group_by(species) %>% 
+  summarize("No. Inviduals" = n(), "Average Flipper Length (mm)" = mean(flipper_length_mm))
+
+table_1_F = data_penguins %>% 
+  filter(sex == "female") %>% 
+  group_by(species) %>% 
+  summarize("No. Inviduals" = n(), "Average Flipper Length (mm)" = mean(flipper_length_mm))
+```
+
+#### Males
+```{r, echo=FALSE}
+knitr::kable(table_1_M,
+             align = "c")
+```
+
+#### Females
+```{r, echo=FALSE}
+knitr::kable(table_1_F,
+             align = "c")
+```
+
+
+## Question 2 | Bill depth as a relation to bill length by species and sex
+
+```{r, echo=FALSE}
+plot_2 = ggplot() + 
+  geom_point(data = data_penguins, 
+             aes(x = bill_length_mm, y = bill_depth_mm, 
+                 color = sex)) +
+  facet_grid(~species) +
+  labs(title = "Antarctic Penguin bill depth against bill length", subtitle = "A multiple species analysis") + 
+  xlab("Bill Length (mm)") +
+  ylab("Bill Depth (mm)")
+
+plot_2
+```
+
+### Observations:
+  Bill depth between species was most similar between adelie and chinstrap penguins. There is an on average graeter bill depth to beak length among males in all species. Males also have the larger and deeper beaks between sexes as well. These observations are also summarized in teh table below: 
+  
+```{r, echo = FALSE}
+table_2_M = data_penguins %>% 
+  filter(sex == "male") %>% 
+  group_by(species) %>% 
+  summarize("No. Individuals" = n(), 
+            "Average Bill Depth (mm)" = mean(bill_depth_mm), 
+            "Average Bill Length (mm)" = mean(bill_length_mm))
+
+table_2_F = data_penguins %>% 
+  filter(sex == "female") %>% 
+  group_by(species) %>% 
+  summarize("No. Individuals" = n(), 
+            "Average Bill Depth (mm)" = mean(bill_depth_mm), 
+            "Average Bill Length (mm)" = mean(bill_length_mm))
+```
+
+#### Males
+```{r, echo=FALSE}
+knitr::kable(table_2_M, 
+             align = "c")
+
+```
+
+
+#### Females
+```{r, echo=FALSE}
+knitr::kable(table_2_F,
+             align = "c")
+```
+
+Step 5 | Share
+
+  This has been made available on GitHub for viewers to see, make comments on and see the R scripts used to analyse the data. This data is also public, and I expect many similar reports exist among the internet. However, Palmer penguins data is exceptionally fun to play with as I have a special interest in Antarctica myself. There will be no final phase (step 6) to 'act' on the data. 
+
+# Appendix
+
+## Citations:
+
+```{r}
+citation(package = "palmerpenguins")
+citation(package = 'bslib')
+citation(package = 'tidyverse')
+```
+
+### Unbroken Code Chunk:
+
+```{r, include=FALSE}
+
+# The project will likely be to graph the different physical attributes of the penguins, Usng facets and create a section for different measurements. 
+
+# Raw looks like most fun, QUESTIONS I CAN ASK A VISUALIZE:
+# data_Q1: Relationship: Body Mass ~ Sex between species.
+# Body mass ~ flipper size
+# 
+
+install.packages('palmerpenguins')
+
+
+library(palmerpenguins)
+library(tidyverse)
+# library(bslib) # This is for rmarkdown html themes for rmarkdown. 
+
+
+
+data = palmerpenguins::penguins %>% drop_na()
+
+head(data)
+tail(data)
+glimpse(data)
+colnames(data)
+
+# Flipper length ~ Body Mass by Species and Sex
+plot_1 = ggplot() + 
+  geom_point(data = data, 
+             aes(x = body_mass_g, y = flipper_length_mm, 
+                 color = sex)) +
+  facet_grid(~species) +
+  labs(title = "Antarctic Penguin Flipper Lengths by Body Mass", subtitle = "A multiple species analysis") + 
+  xlab("Body Mass (g)") +
+  ylab("Flipper Length (mm)")
+
+# Bill depth ~ bill length by species and sex
+plot_2 = ggplot() + 
+  geom_point(data = data, 
+             aes(x = bill_length_mm, y = bill_depth_mm, 
+                 color = sex)) +
+  facet_grid(~species) +
+  labs(title = "Antarctic Penguin bill depth against bill length", subtitle = "A multiple species analysis") + 
+  xlab("Bill Length (mm)") +
+  ylab("Bill Depth (mm)")
+
+table_2_M = data_penguins %>% 
+  filter(sex == "male") %>% 
+  group_by(species) %>% 
+  summarize("No. Individuals" = n(), 
+            "Average Bill Depth (mm)" = mean(bill_depth_mm), 
+            "Average Bill Length (mm)" = mean(bill_length_mm))
+
+table_2_F = data_penguins %>% 
+  filter(sex == "female") %>% 
+  group_by(species) %>% 
+  summarize("No. Individuals" = n(), 
+            "Average Bill Depth (mm)" = mean(bill_depth_mm), 
+            "Average Bill Length (mm)" = mean(bill_length_mm))
+
+#---- References
+
+# citation()
+citation(package = "palmerpenguins")
+citation(package = 'bslib')
+citation(package = 'tidyverse')
+
+```
+
+
+
+
+
+
+
