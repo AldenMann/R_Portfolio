@@ -71,6 +71,7 @@ table_2_F = data_penguins %>%
             "Average Bill Length (mm)" = mean(bill_length_mm))
 
 
+
 # citation()
 citation(package = "palmerpenguins")
 citation(package = 'bslib')
