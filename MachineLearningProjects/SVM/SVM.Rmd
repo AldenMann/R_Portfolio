@@ -1,0 +1,13 @@
+---
+title: "SVM"
+author: "Robert Manni"
+date: "5/17/2021"
+output: word_document
+---
+
+# SVM | Support Vector Machines
+
+## SVM Intuition|
+
+Imagine your trying to teach a machine to distinguish from apples and oranges. That's kind of the standard example here. It will also look at the very extreme vectors taht could almost be one of the other vectors. These extremes are used to create the support vector for which the machine will use. 
+
