@@ -1,5 +1,6 @@
 library(tidyverse)
 library(skimr)
+library(scales)
 
 wd = getwd()
 setwd(wd)
@@ -59,5 +60,30 @@ unique(data$Industry)
 
 #--------- Now that the data is cleaned We'll Start Graphing!--------------'
 
+#Data - scatter plot classified by industry showing revenue, expenses and profit :
+p = ggplot(data = data2.0)
 
-          
+p + geom_point(aes(x = Revenue, y = Expenses,
+                          color = Industry, size = Profit))    
+
+#Industry trends for expenses: 
+
+p_2 = ggplot(data = data2.0, aes(x = Revenue, y = Expenses, color=Industry))
+
+# Smooth helps us see the trends a little better. This is still a little messy for me personally. 
+p_2 + geom_point() + 
+  geom_smooth(fill = NA, size = 1.2)
+
+
+#Boxplot: This is a much better way of displaying that data. 
+
+p_3 = ggplot(data = data2.0, aes( x = Industry, y = Growth, 
+                            color=Industry))
+
+p_3 + geom_jitter() + 
+  geom_boxplot(size = 1, alpha = 0.5, outlier.colour = NA)
+
+
+
+
+
