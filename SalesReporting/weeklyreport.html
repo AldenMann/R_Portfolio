@@ -174,7 +174,10 @@ pre code {
 </div>
 
 
-<p>For week ending in 2022-02-01</p>
+<p>The below section uses parameteres that update daily and since my data does not update daily, I have commented out this chunk. I have left it here for future use.</p>
+<div id="filtering-data-for-a-specific-week" class="section level1">
+<h1>Filtering Data for a specific week:</h1>
+<p>For week ending in 2022-05-17</p>
 <p><strong>Quotes by Product</strong></p>
 <table>
 <caption>Product ABC This week</caption>
@@ -191,7 +194,6 @@ pre code {
 <tbody>
 </tbody>
 </table>
-<div style="page-break-after: always;"></div>
 <table>
 <caption>Product DEF This week</caption>
 <thead>
@@ -205,6 +207,22 @@ pre code {
 </tr>
 </thead>
 <tbody>
+<tr class="odd">
+<td align="center">DEF</td>
+<td align="center">509</td>
+<td align="center">LUX647</td>
+<td align="center">LUX</td>
+<td align="center">Luxembourg</td>
+<td align="center">2021-09-16</td>
+</tr>
+<tr class="even">
+<td align="center">DEF</td>
+<td align="center">684</td>
+<td align="center">LIB112</td>
+<td align="center">LIB</td>
+<td align="center">Libya</td>
+<td align="center">2021-09-16</td>
+</tr>
 </tbody>
 </table>
 <table>
@@ -220,6 +238,22 @@ pre code {
 </tr>
 </thead>
 <tbody>
+<tr class="odd">
+<td align="center">GHI</td>
+<td align="center">97</td>
+<td align="center">EQU138</td>
+<td align="center">EQU</td>
+<td align="center">Equatorial Guinea</td>
+<td align="center">2021-09-18</td>
+</tr>
+<tr class="even">
+<td align="center">GHI</td>
+<td align="center">566</td>
+<td align="center">PAN95</td>
+<td align="center">PAN</td>
+<td align="center">Panama</td>
+<td align="center">2021-09-18</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Total Quantities in Quotes by Product</strong></p>
@@ -256,6 +290,52 @@ pre code {
 </tbody>
 </table>
 <p>Average close rate for all orders is 14.8 days.</p>
+<div id="orders-shipped-this-week" class="section level2">
+<h2>Orders Shipped this Week:</h2>
+<pre class="r"><code>week_PRODUCT1_shipped = data_tidy %&gt;% 
+  select(Cat.No., QTY, ID, CLIENT, COUNTRY, INVOICE.DATE) %&gt;% 
+  filter(between(INVOICE.DATE, mdy(&quot;09-15-2021&quot;), mdy(&quot;09-20-2021&quot;)))
+
+shipped1 = week_PRODUCT1_shipped %&gt;% 
+  group_by(Cat.No.) %&gt;% 
+  summarize(Total = scales::dollar((sum(QTY))), Orders= n())
+
+knitr::kable(shipped1, align = &#39;c&#39;,
+             caption = &quot;Orders Shipped this Week&quot;)</code></pre>
+<table>
+<caption>Orders Shipped this Week</caption>
+<thead>
+<tr class="header">
+<th align="center">Cat.No.</th>
+<th align="center">Total</th>
+<th align="center">Orders</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">ABC</td>
+<td align="center">$2,561</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="center">DEF</td>
+<td align="center">$434</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">GHI</td>
+<td align="center">$833</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="center">JKL</td>
+<td align="center">$1,492</td>
+<td align="center">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
 
 

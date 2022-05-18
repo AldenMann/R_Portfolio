@@ -37,21 +37,45 @@ data_tidy = data %>%
 avg_converted = signif(mean(data_tidy$CONVERTED), 3)
 avg_closed = signif(mean(data_tidy$CLOSED), 3)
 
+```
 
+The below section uses parameteres that update daily and since my data does not update daily, I have commented out this chunk. I have left it here for future use. 
+
+```{r, include=FALSE}
+# week_PRODUCT1 = data_tidy %>% 
+#   select(Cat.No., QTY, ID, CLIENT, COUNTRY, QUOTE.DATE) %>% 
+#   filter(QUOTE.DATE >= today("GMT")-days(7)) %>% 
+#   filter(Cat.No.== "ABC")
+# 
+# week_PRODUCT2 = data_tidy %>% 
+#   select(Cat.No., QTY, ID, CLIENT, COUNTRY, QUOTE.DATE) %>% 
+#   filter(QUOTE.DATE >= today("GMT")-days(7)) %>% 
+#   filter(Cat.No.== "DEF")
+# 
+# 
+# week_PRODUCT3 = data_tidy %>%
+#   select(Cat.No., QTY, ID, CLIENT, COUNTRY, QUOTE.DATE) %>%
+#   filter(QUOTE.DATE >= today("GMT")-days(7)) %>%
+#   filter(Cat.No.== "GHI")
+```
+
+# Filtering Data for a specific week:
+
+```{r, include=FALSE}
 week_PRODUCT1 = data_tidy %>% 
   select(Cat.No., QTY, ID, CLIENT, COUNTRY, QUOTE.DATE) %>% 
-  filter(QUOTE.DATE >= today("GMT")-days(7)) %>% 
+  filter(between(QUOTE.DATE, mdy("09-15-2021"), mdy("09-20-2021"))) %>% 
   filter(Cat.No.== "ABC")
 
 week_PRODUCT2 = data_tidy %>% 
   select(Cat.No., QTY, ID, CLIENT, COUNTRY, QUOTE.DATE) %>% 
-  filter(QUOTE.DATE >= today("GMT")-days(7)) %>% 
+  filter(between(QUOTE.DATE, mdy("09-15-2021"), mdy("09-20-2021"))) %>% 
   filter(Cat.No.== "DEF")
 
 
 week_PRODUCT3 = data_tidy %>%
   select(Cat.No., QTY, ID, CLIENT, COUNTRY, QUOTE.DATE) %>%
-  filter(QUOTE.DATE >= today("GMT")-days(7)) %>%
+  filter(between(QUOTE.DATE, mdy("09-15-2021"), mdy("09-20-2021"))) %>%
   filter(Cat.No.== "GHI")
 ```
 
@@ -64,7 +88,6 @@ knitr::kable(week_PRODUCT1, caption = "Product ABC This week",
              col.names = c("Product", "Quantity", "ID", "Client", "Country", "Quote Date"),
              align = "c")
 ```
-\pagebreak
 
 ```{r, echo=FALSE}
 knitr::kable(week_PRODUCT2, caption = "Product DEF This week",
@@ -95,3 +118,19 @@ caption = "Total Quantities Quoted For Each Product This Quarter")
 ```
 
 Average close rate for all orders is `r avg_closed` days. 
+
+## Orders Shipped this Week:
+
+```{r}
+week_PRODUCT1_shipped = data_tidy %>% 
+  select(Cat.No., QTY, ID, CLIENT, COUNTRY, INVOICE.DATE) %>% 
+  filter(between(INVOICE.DATE, mdy("09-15-2021"), mdy("09-20-2021")))
+
+shipped1 = week_PRODUCT1_shipped %>% 
+  group_by(Cat.No.) %>% 
+  summarize(Total = scales::dollar((sum(QTY))), Orders= n())
+
+knitr::kable(shipped1, align = 'c',
+             caption = "Orders Shipped this Week")
+```
+
