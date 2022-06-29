@@ -5,6 +5,9 @@ library(tidyverse)
 library(lubridate)
 library(caTools)
 
+#Increase memory limit on my device
+memory.limit(24000)
+
 data_train = read.csv(choose.files())
 
 data_test = read.csv(choose.files())
@@ -17,7 +20,7 @@ data_train_fmt = data_train %>%
   mutate(date = dmy(date),
          shop_id = factor(shop_id),
          item_id = factor(item_id)) %>% 
-  filter(date >= "2015-01-01") # There is too much data for my dinky laptop. Selecting only 2015
+  filter(date >= "2015-06-01") # There is too much data for my dinky laptop. Selecting only > JUNE 2015
 
 glimpse(data_train_fmt)
 
