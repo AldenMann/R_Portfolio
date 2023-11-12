@@ -121,7 +121,7 @@ Average close rate for all orders is `r avg_closed` days.
 
 ## Orders Shipped this Week:
 
-```{r}
+```{r,echo=FALSE}
 week_PRODUCT1_shipped = data_tidy %>% 
   select(Cat.No., QTY, ID, CLIENT, COUNTRY, INVOICE.DATE) %>% 
   filter(between(INVOICE.DATE, mdy("09-15-2021"), mdy("09-20-2021")))
