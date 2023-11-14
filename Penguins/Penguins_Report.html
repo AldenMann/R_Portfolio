@@ -627,7 +627,6 @@ lengthe by sex and species.</li>
 we’ll only need certain columns. First we’ll load the libraries we’ll be
 using to explore the data from the tidyverse and the dataset
 palmerpenguins.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.2     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
@@ -637,20 +636,16 @@ palmerpenguins.</p>
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>library(palmerpenguins)
-library(bslib)</code></pre>
-<pre><code>## 
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+## 
 ## Attaching package: &#39;bslib&#39;
+## 
 ## 
 ## The following object is masked from &#39;package:utils&#39;:
 ## 
 ##     page</code></pre>
 <div id="explore-the-date-and-clean" class="section level2">
 <h2>Explore the Date and clean</h2>
-<pre class="r"><code>data = palmerpenguins::penguins %&gt;% drop_na() # assign data and drop NA&#39;s, since we&#39;ll likely not be able to interpolate the data. 
-
-head(data) # head and tail to inspect quickly</code></pre>
 <pre><code>## # A tibble: 6 × 8
 ##   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
 ##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
@@ -661,7 +656,6 @@ head(data) # head and tail to inspect quickly</code></pre>
 ## 5 Adelie  Torgersen           39.3          20.6               190        3650
 ## 6 Adelie  Torgersen           38.9          17.8               181        3625
 ## # ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
-<pre class="r"><code>tail(data)</code></pre>
 <pre><code>## # A tibble: 6 × 8
 ##   species   island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
 ##   &lt;fct&gt;     &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
@@ -672,7 +666,6 @@ head(data) # head and tail to inspect quickly</code></pre>
 ## 5 Chinstrap Dream            50.8          19                 210        4100
 ## 6 Chinstrap Dream            50.2          18.7               198        3775
 ## # ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
-<pre class="r"><code>glimpse(data) # To see the columns and data types we&#39;ll be working with. </code></pre>
 <pre><code>## Rows: 333
 ## Columns: 8
 ## $ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adelie, Adelie, Adel…
@@ -683,20 +676,12 @@ head(data) # head and tail to inspect quickly</code></pre>
 ## $ body_mass_g       &lt;int&gt; 3750, 3800, 3250, 3450, 3650, 3625, 4675, 3200, 3800…
 ## $ sex               &lt;fct&gt; male, female, female, female, male, female, male, fe…
 ## $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007…</code></pre>
-<pre class="r"><code>colnames(data) # Quickly reference column nsames for selection. </code></pre>
 <pre><code>## [1] &quot;species&quot;           &quot;island&quot;            &quot;bill_length_mm&quot;   
 ## [4] &quot;bill_depth_mm&quot;     &quot;flipper_length_mm&quot; &quot;body_mass_g&quot;      
 ## [7] &quot;sex&quot;               &quot;year&quot;</code></pre>
 <p>Confirming that we do not see any errors or potential complications
 to our data that require cleaning, we can select the columns we would
 like to use for our analysis:</p>
-<pre class="r"><code># We can select the data that we&#39;ll use for both questions:
-# Island and Year are not required to answer our questions, so we&#39;ll select all other columns to work with:
-
-data_penguins = data %&gt;% 
-  select(-island, -year)
-
-glimpse(data_penguins) # glimpse again or use colnames(data_penguis) to confirm the removal of the two columns. </code></pre>
 <pre><code>## Rows: 333
 ## Columns: 6
 ## $ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adelie, Adelie, Adel…

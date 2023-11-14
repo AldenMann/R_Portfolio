@@ -25,7 +25,7 @@ output:
 
   The Palmer penguin data set has several columns, but for our analysis we'll only need certain columns. First we'll load the libraries we'll be using to explore the data from the tidyverse and the dataset palmerpenguins. 
 
-```{r}
+```{r, echo=FALSE}
 library(tidyverse)
 library(palmerpenguins)
 library(bslib)
@@ -33,7 +33,7 @@ library(bslib)
 
 ## Explore the Date and clean
 
-```{r}
+```{r, echo=FALSE}
 data = palmerpenguins::penguins %>% drop_na() # assign data and drop NA's, since we'll likely not be able to interpolate the data. 
 
 head(data) # head and tail to inspect quickly
@@ -45,7 +45,7 @@ colnames(data) # Quickly reference column nsames for selection.
 
 Confirming that we do not see any errors or potential complications to our data that require cleaning, we can select the columns we would like to use for our analysis: 
 
-```{r}
+```{r, echo=FALSE}
 # We can select the data that we'll use for both questions:
 # Island and Year are not required to answer our questions, so we'll select all other columns to work with:
 
