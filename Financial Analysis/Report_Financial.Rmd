@@ -18,6 +18,7 @@ library(tidyverse)
 library(skimr)
 library(scales)
 library(bslib) # For html reports
+library(plotly)
 
 # Details:
 
@@ -73,9 +74,11 @@ This report is to elucidate from the data the trends between different industrie
 ## Overview:
 
 ```{r, echo=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+
 plot = ggplot(data = data2.0) # Assign data to plot to a veriable. I just like that. 
 
-plot + geom_point(aes(x = Revenue, y = Expenses,
+Overview_plot = plot + geom_point(aes(x = Revenue, y = Expenses,
                       size = Profit,
                       color = Industry))  +
   labs(title = "Revenue by Expense Growth",
@@ -86,12 +89,14 @@ plot + geom_point(aes(x = Revenue, y = Expenses,
                      guide = guide_axis(angle = 45)) +
   scale_y_continuous(NULL,
                      labels = label_dollar())
+
+ggplotly(Overview_plot)
 ```
 
 ## Relationship of Revenue Growth to Expenses by Industry
 
 ```{r, echo=FALSE}
-plot + geom_point(aes(x = Expenses, y = Revenue,
+Rev_Growth = plot + geom_point(aes(x = Expenses, y = Revenue,
                       color = Industry)) +
   geom_smooth(aes(x = Expenses, y = Revenue,
                       color = Industry),
@@ -105,17 +110,20 @@ plot + geom_point(aes(x = Expenses, y = Revenue,
   scale_y_continuous(NULL,
                      breaks = breaks_extended(n = 7),
                      labels = scales::label_dollar(),)
-  
+ 
+ggplotly(Rev_Growth) 
 ```
 
 ## Overall Growth by Industry
 
 ```{r, echo=FALSE}
-plot + geom_boxplot(aes(x = Industry, y = Growth, 
+Overall_Report = plot + geom_boxplot(aes(x = Industry, y = Growth, 
                         color = Industry)) +
   labs(title = "Growth by Industry",
        y = "Growth (%)") +
   scale_x_discrete(NULL,
                    guide = guide_axis(angle = 45))
+
+ggplotly(Overall_Report)
 ```
 
