@@ -32,6 +32,7 @@ library(lubridate)
 library(scales)
 library(skimr)
 library(bslib)
+library(plotly)
 
 data = read.csv(choose.files(), na.strings = c(""))
 
@@ -76,10 +77,13 @@ knitr::kable(idleFlage, align = "c")
 
 ## All Machines Plot:
 ```{r, echo=FALSE}
-plot_machines + 
-  geom_point() +
+All_machines_plot = plot_machines + 
+  geom_jitter() +
   labs(title = "Percent Idle All Machines",
        x = "Month",
        y = "Percent Idle")
+
+ggplotly(All_machines_plot)
+
 ```
 
