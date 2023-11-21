@@ -29,6 +29,7 @@ output:
 library(tidyverse)
 library(palmerpenguins)
 library(bslib)
+library(plotly)
 ```
 
 ## Explore the Date and clean
@@ -40,7 +41,7 @@ head(data) # head and tail to inspect quickly
 tail(data)
 
 glimpse(data) # To see the columns and data types we'll be working with. 
-colnames(data) # Quickly reference column nsames for selection. 
+colnames(data) # Quickly reference column names for selection. 
 ```
 
 Confirming that we do not see any errors or potential complications to our data that require cleaning, we can select the columns we would like to use for our analysis: 
@@ -71,7 +72,7 @@ plot_1 = ggplot() +
   xlab("Body Mass (g)") +
   ylab("Flipper Length (mm)")
 
-plot_1
+ggplotly(plot_1)
 ```
 
 ### Observations:
@@ -114,7 +115,7 @@ plot_2 = ggplot() +
   xlab("Bill Length (mm)") +
   ylab("Bill Depth (mm)")
 
-plot_2
+ggplotly(plot_2)
 ```
 
 ### Observations:
