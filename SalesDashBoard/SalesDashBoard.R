@@ -2,6 +2,7 @@
 library(tidyverse) # All the good stuff + lubridate
 # install.packages("zoo")
 library(zoo) # zoo has a nicer function for creating quarterly data thal lubridate IMO. 
+library(plotly)
 
 
 
@@ -26,7 +27,7 @@ Rev_Data = data_raw %>%
 rev_hist_data = Rev_Data %>% 
   select(Sales.Channel, ShipDate, Revenue, Quarter)
 
-ggplot(data = rev_hist_data, aes(x = ShipDate, y = Revenue)) +
+Rev_graph = ggplot(data = rev_hist_data, aes(x = ShipDate, y = Revenue)) +
   geom_col(fill = "#009E73") + 
   facet_grid(~Sales.Channel) + 
   labs(
@@ -35,7 +36,9 @@ ggplot(data = rev_hist_data, aes(x = ShipDate, y = Revenue)) +
   ) + 
   scale_y_continuous(NULL,
                      labels = scales::label_dollar()
-  ) 
+  )
+
+Rev_graph %>% ggplotly()
   
 
   
