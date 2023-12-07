@@ -1,0 +1,46 @@
+---
+title: "Penguins Dashboard"
+output: 
+  flexdashboard::flex_dashboard
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+source("source_Libraries.R")
+source("penguinsFxns.R")
+
+characterFields = data %>% 
+  select_if(is.character) %>% #selects only columns with character values
+  names() # creates a list of those characters. 
+
+sp_penguins = data %>% # unlike above, I wanted the unique values to be returned from that single column, not the column names.
+  select(species) %>% 
+  distinct() %>% 
+  pull()
+
+```
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+```{r}
+selectInput("FilterBy","Filter By", choices = characterFields)
+selectInput("FilterValue","Filter Value", choices = sp_penguins, multiple = T)
+selectInput("GroupBy", "Group By", choices = characterFields, multiple = T)
+```
+
+Output
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+#
+renderTable({
+ data %>% 
+    SummaryData(FilterBy = input$FilterBy, 
+                FilterValue = input$FilterValue, 
+                GroupBy = input$GroupBy)
+})
+```
+
