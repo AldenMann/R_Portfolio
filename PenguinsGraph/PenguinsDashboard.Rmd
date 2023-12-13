@@ -32,7 +32,7 @@ selectInput("GroupBy", "Group By", choices = characterFields, multiple = T)
 Output
 -----------------------------------------------------------------------
 
-### Chart B
+### Data Table
 
 ```{r}
 #
