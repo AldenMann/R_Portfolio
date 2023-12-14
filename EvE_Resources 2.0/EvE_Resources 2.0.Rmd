@@ -1,0 +1,67 @@
+---
+title: "EvE Echoes | Resource Finder"
+output: 
+  flexdashboard::flex_dashboard
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+source("libraries_Script.R")
+source("EvE_Fxns.R")
+
+data = read.csv("Planetary Production_091320.csv")
+
+FilterChoices = data %>%
+  select_if(is.character) %>%
+  names()
+
+FilterChoiceNames = data %>%
+  select(Resource) %>%
+  distinct() %>%
+  pull()
+
+GroupChoices = data %>% select_if(is.atomic) %>% names()
+
+```
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+```{r}
+selectInput("FilterBy", "Filter By", choices = FilterChoices, multiple = T)
+selectInput("FilterValue", "Filter Value", choices = FilterChoiceNames)
+selectInput("GroupBy", "Group By", choices = GroupChoices, multiple = T)
+
+```
+
+Outputs
+-----------------------------------------------------------------------
+### Resource Finder
+
+```{r}
+
+renderDataTable({
+    RsrceFinder(
+      FilterBy = input$FilterBy,
+      FilterValue = input$FilterValue,
+      GroupBy = input$GroupBy
+    )
+})
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
