@@ -48,6 +48,7 @@ renderDataTable({
     )
 })
 
+
 ```
 
 Column {data-width=350}

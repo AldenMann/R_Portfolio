@@ -6,12 +6,12 @@ RsrceFinder = function(DT, FilterBy = "Resource", FilterValue = "Base Metals", G
     filter(str_detect(!! rlang::sym(FilterBy), FilterValue)) %>% 
     group_by(!!! rlang::syms(GroupBy)) %>% 
     drop_na() %>% 
-    datatable()
+    as.data.frame()
 }
 
 
-#test1 = RsrceFinder(FilterBy = "Resource", FilterValue = "Base Metals", GroupBy = "Output")
-
+# test1 = RsrceFinder(FilterBy = "Resource", FilterValue = "Base Metals", GroupBy = "Output")
+# 
 # is.data.frame(test1)
 
 # test1 %>% RsrceFinder()

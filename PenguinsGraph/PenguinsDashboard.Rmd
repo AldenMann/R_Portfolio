@@ -27,6 +27,8 @@ Inputs {.sidebar}
 selectInput("FilterBy","Filter By", choices = characterFields)
 selectInput("FilterValue","Filter Value", choices = sp_penguins, multiple = T)
 selectInput("GroupBy", "Group By", choices = characterFields, multiple = T)
+
+uiOutput("DownloadUI")
 ```
 
 Output
@@ -41,6 +43,21 @@ renderTable({
     SummaryData(FilterBy = input$FilterBy, 
                 FilterValue = input$FilterValue, 
                 GroupBy = input$GroupBy)
+  
 })
+
+output$DownloadUI = renderUI( {
+  downloadButton("Download", "Download Data")
+})
+
+
+output$Download = downloadHandler(
+  filename = function(){
+    "penguin.csv"
+  },
+  content = function(file) {
+    write.csv(data, file, row.names = FALSE)
+  }
+)
 ```
 
