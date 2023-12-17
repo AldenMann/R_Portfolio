@@ -1,6 +1,6 @@
 
 # Resource Finder:
-RsrceFinder = function(DT, FilterBy = "Resource", FilterValue = "Base Metals", GroupBy = "Output"){
+RsrceFinder = function(data, DT, FilterBy = "Resource", FilterValue = "Base Metals", GroupBy = "System"){
   data %>% 
     select_if(is.atomic) %>% 
     filter(str_detect(!! rlang::sym(FilterBy), FilterValue)) %>% 
