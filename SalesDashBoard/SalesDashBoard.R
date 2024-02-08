@@ -25,9 +25,9 @@ Rev_Data = data_raw %>%
 # We'll need some high level overviews for the data. Sales by quarter/year.
 
 rev_hist_data = Rev_Data %>% 
-  select(Sales.Channel, ShipDate, Revenue, Quarter)
+  select(Sales.Channel, Revenue, Quarter)
 
-Rev_graph = ggplot(data = rev_hist_data, aes(x = ShipDate, y = Revenue)) +
+Rev_graph = ggplot(data = rev_hist_data, aes(x = Quarter, y = Revenue)) +
   geom_col(fill = "#009E73") + 
   facet_grid(~Sales.Channel) + 
   labs(
@@ -36,7 +36,10 @@ Rev_graph = ggplot(data = rev_hist_data, aes(x = ShipDate, y = Revenue)) +
   ) + 
   scale_y_continuous(NULL,
                      labels = scales::label_dollar()
-  )
+  ) + 
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) + 
+  theme(axis.title.x = element_text(margin = 5.25)) + 
+  theme(axis.title.y.left = element_text(margin = 5))
 
 Rev_graph %>% ggplotly()
   
