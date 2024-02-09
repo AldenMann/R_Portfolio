@@ -56,7 +56,10 @@ output$Download = downloadHandler(
     "penguin.csv"
   },
   content = function(file) {
-    write.csv(data, file, row.names = FALSE)
+    filtered_data <- SummaryData(FilterBy = input$FilterBy, 
+                                  FilterValue = input$FilterValue, 
+                                  GroupBy = input$GroupBy)
+    write.csv(filtered_data, file, row.names = FALSE)
   }
 )
 ```
