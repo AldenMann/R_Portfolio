@@ -31,11 +31,22 @@ glimpse(data_pirates)
 glimpse(data_countryCodes)
 glimpse(data_countryIndicators)
 
+# NA values are present in much of the dataset - determining how much may be helpful for more specific observations. 
+
+data_pirates %>% # the data is getting coerced, so might try another method
+  select(attack_type) %>% 
+  str_count("NA") %>% 
+  sum()
+
 ```
 
-# Data Review
+# Cleaning and Transformation
 
 ```{r}
+# Pirate Attacks Data
+
+data_attacks = data_pirates %>% 
+  
 
 ```
 
