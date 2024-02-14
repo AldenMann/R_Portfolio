@@ -19,6 +19,7 @@ Dataset and description provided by VAGIF of Kaggle.
 #packages:
 library(tidyverse) # tidyverse for data handling.
 library(lubridate) # for working with dates and times
+library(sf)
 
 #set working directory
 
@@ -34,9 +35,13 @@ glimpse(data_countryIndicators)
 # NA values are present in much of the dataset - determining how much may be helpful for more specific observations. 
 
 data_pirates %>% # the data is getting coerced, so might try another method
-  select(attack_type) %>% 
-  str_count("NA") %>% 
-  sum()
+  select(attack_type) %>% # Number of NA values in attack type
+  is.na() %>% # find the NA values
+  sum() # how many we have in total: 120
+
+# how do I want to handle/treat NA values in this instance? I'm thinking for analyzing attack by vessel and location, KNN would be a sufficient model as I don't believe this has a linear relationship and there will be value in classification of vessels. 
+
+# step 1: Because it is easier - is to map the data a graph. 
 
 ```
 
