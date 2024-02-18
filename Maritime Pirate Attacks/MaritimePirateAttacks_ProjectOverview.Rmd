@@ -19,7 +19,8 @@ Dataset and description provided by VAGIF of Kaggle.
 #packages:
 library(tidyverse) # tidyverse for data handling.
 library(lubridate) # for working with dates and times
-library(sf)
+library(sf) # for working with spatial data
+#library(rnaturalearth) # country specific data not sure if actually needed (evaluate)
 
 #set working directory
 
@@ -50,7 +51,7 @@ data_pirates %>% # the data is getting coerced, so might try another method
 ```{r}
 # Pirate Attacks Data
 
-data_attacks = data_pirates %>% 
+
   
 
 ```
