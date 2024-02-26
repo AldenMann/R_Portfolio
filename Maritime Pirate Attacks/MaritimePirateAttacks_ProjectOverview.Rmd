@@ -40,7 +40,9 @@ data_pirates %>% # the data is getting coerced, so might try another method
   is.na() %>% # find the NA values
   sum() # how many we have in total: 120
 
-# how do I want to handle/treat NA values in this instance? I'm thinking for analyzing attack by vessel and location, KNN would be a sufficient model as I don't believe this has a linear relationship and there will be value in classification of vessels. 
+# how do I want to handle/treat NA values in this instance? I'm thinking for analyzing attack by vessel and location, KNN would be a sufficient model as I don't believe this has a linear relationship and there will be value in classification of vessels.
+
+# didn't see any missing "date" values. There are NA values in time - and are characters. So let's look into that. Most of the data has missing time values, so, using median, might be okay, but it's a huge chunk of missing data. 
 
 # step 1: Because it is easier - is to map the data a graph. 
 
