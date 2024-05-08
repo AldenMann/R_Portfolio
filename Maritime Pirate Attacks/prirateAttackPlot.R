@@ -2,11 +2,9 @@ PirateAttacks_df = data_pirates # separating this as working data from the origi
 
 pirates = PirateAttacks_df 
   
-  
-pirate_hm_impute = pirates %>% # get median time of day data to impute
-  filter(!is.na(time)) %>% # only values with time data
-  mutate(time = as.POSIXlt(time)) # Can't convert to posix because data in mixed - includes 'UTC' for example.  
+# For time series data - selecting only columns with time  
+pirate_time = pirates %>% 
+  filter(!is.na(time)) # I may want to consider using posix time or similar to do calculations, but may not be needed.
 
-pirate_hm_median = pirate_hm_impute %>% 
-  select(time) %>% # selecting only the time column. 
-  as.POSIXlt()
+
+         
