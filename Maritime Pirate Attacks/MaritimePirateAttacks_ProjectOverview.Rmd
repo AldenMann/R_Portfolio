@@ -20,6 +20,8 @@ Dataset and description provided by VAGIF of Kaggle.
 library(tidyverse) # tidyverse for data handling.
 library(lubridate) # for working with dates and times
 library(sf) # for working with spatial data
+library(leaflet)
+library(plotly)
 #library(rnaturalearth) # country specific data not sure if actually needed (evaluate)
 
 #set working directory

@@ -6,5 +6,13 @@ pirates = PirateAttacks_df
 pirate_time = pirates %>% 
   filter(!is.na(time)) # I may want to consider using posix time or similar to do calculations, but may not be needed.
 
+T1 = pirate_time %>% 
+  group_by(nearest_country) %>% 
+  summarise(total_attacks = n()) %>% 
+  arrange(desc(total_attacks))
 
-         
+P1 = pirate_time %>% 
+  leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(~longitude, ~latitude, radius = 1) %>% 
+  print(P1)
