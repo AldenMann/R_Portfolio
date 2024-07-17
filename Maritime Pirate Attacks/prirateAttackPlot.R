@@ -58,3 +58,23 @@ P3 = ggplot(data = T3,
 P3_Plotly = ggplotly(P3) %>% 
   print(P3)
 
+# Attack by Vessel Type
+T4 = pirates %>% 
+  filter(vessel_type != is.na(vessel_type)) %>% 
+  count(vessel_type) %>% 
+  arrange(desc(n)) %>% 
+  head(10) %>% 
+  mutate(vessel_type = fct_reorder(vessel_type, n, .desc = F))
+
+P4 = ggplot(T4,
+            aes(x=vessel_type, y=n, color = vessel_type)) + 
+  geom_col() + 
+  labs(title = "Vessels Targetted by Pirates",
+       x = "Vessel Type",
+       y = "Attacks") + 
+  coord_flip() +
+  scale_y_continuous(breaks = seq(0,350, by = 50))
+
+P4_plotly = ggplotly(P4) %>% 
+  print(P4_plotly)
+
