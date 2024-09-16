@@ -69,7 +69,7 @@ T4 = pirates %>%
 P4 = ggplot(T4,
             aes(x=vessel_type, y=n, color = vessel_type)) + 
   geom_col() + 
-  labs(title = "Vessels Targetted by Pirates",
+  labs(title = "Vessels Targeted by Pirates",
        x = "Vessel Type",
        y = "Attacks") + 
   coord_flip() +
@@ -78,3 +78,7 @@ P4 = ggplot(T4,
 P4_plotly = ggplotly(P4) %>% 
   print(P4_plotly)
 
+
+### render flexdashboard as a PDF -- B/c linkedin won't let me share html file. 
+
+rmarkdown::render(choose.files(), output_file = "PirateDashboard.pdf")
