@@ -14,25 +14,20 @@ data = read.csv(choose.files(), na.strings = c(""))
 # Fix the character issues!
 
 data2.0 = data %>% 
-  mutate(Expenses = gsub("Dollars", "", Expenses), # Removed "Dollars".
-         Expenses = gsub(",", "", Expenses), # Removed commas and the space.
-         Expenses = str_squish(Expenses),
-         Expenses = as.numeric(Expenses), # Changed to integer (hopefully. Will need to check later.).
-         Revenue = gsub("\\$", "", Revenue), # used esscape sequence '\\' to remove '$'. 
-         Revenue = gsub(",", "", Revenue),# Removed commas and the space.
-         Revenue = as.numeric(Revenue), # Makes Revenue MATHEMATICAL MAN!
-         Profit = as.numeric(Profit), # Makes Profits MATHEMAICAL MAN!
-         Growth = gsub("%", "", Growth), # Removed % symbol from values. 
-         Growth = as.numeric(Growth)) %>% 
-  mutate(State = ifelse(City == 'San Francisco', 'CA', State),
-         State = ifelse(City == 'New York', 'NY', State),
-         Industry = ifelse(Name == 'Techline', 'IT Services', Industry),
-         Industry = ifelse(Name == 'Cityace', 'Retail', Industry),
-         Expenses = ifelse(is.na(Expenses), Revenue-Profit, Expenses),
+      mutate(Expenses = as.numeric(gsub("[\\$, Dollars]", "", Expenses)),  # Remove '$', ',', and " Dollars"
+             Revenue = as.numeric(gsub("[\\$,]", "", Revenue)),    # Remove '$' and ','
+             Profit = as.numeric(Profit), 
+             Growth = as.numeric(gsub("%", "", Growth))
+  ) %>% 
+  mutate(State = case_when(City == 'San Francisco' ~ 'CA', 
+                           City == 'New York' ~ 'NY', 
+                           TRUE ~ State),  # Keep original State if no match
+         Industry = case_when(Name == 'Techline' ~ 'IT Services', 
+                              Name == 'Cityace' ~ 'Retail', 
+                              TRUE ~ Industry),  # Keep original Industry if no match
+         Expenses = ifelse(is.na(Expenses), Revenue - Profit, Expenses),
          Inception = ifelse(Name == 'Lathotline', '2011', Inception)) %>% 
-  drop_na() # two construction columns with NA values for all cash are dropped. 
-
-
+  drop_na()
 
 
 head(data2.0, 25)

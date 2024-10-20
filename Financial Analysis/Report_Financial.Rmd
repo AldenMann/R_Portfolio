@@ -34,23 +34,21 @@ data = read.csv(choose.files(), na.strings = c(""))
 #skim(data)
 
 data2.0 = data %>% 
-  mutate(Expenses = gsub("Dollars", "", Expenses), # Removed "Dollars".
-         Expenses = gsub(",", "", Expenses), # Removed commas and the space.
-         Expenses = str_squish(Expenses),
-         Expenses = as.numeric(Expenses), # Changed to integer (hopefully. Will need to check later.).
-         Revenue = gsub("\\$", "", Revenue), # used esscape sequence '\\' to remove '$'. 
-         Revenue = gsub(",", "", Revenue),# Removed commas and the space.
-         Revenue = as.numeric(Revenue), # Makes Revenue MATHEMATICAL MAN!
-         Profit = as.numeric(Profit), # Makes Profits MATHEMAICAL MAN!
-         Growth = gsub("%", "", Growth), # Removed % symbol from values. 
-         Growth = as.numeric(Growth)) %>% # Makes Growth MATHEMATICAL MAN!
-  mutate(State = ifelse(City == 'San Francisco', 'CA', State), # NA value in State is CA
-         State = ifelse(City == 'New York', 'NY', State), # NA value in State is NY
-         Industry = ifelse(Name == 'Techline', 'IT Services', Industry), #NA value in Industry is IT Services
-         Industry = ifelse(Name == 'Cityace', 'Retail', Industry), #NA value in Industry is Retail
-         Expenses = ifelse(is.na(Expenses), Revenue-Profit, Expenses), # Calculated what Expenses are from existing columns. 
-         Inception = ifelse(Name == 'Lathotline', '2011', Inception)) %>%  # Made the inception date 2011 for the NA value.
-  drop_na() #drops NA's for the two construction columns that I cannot infer data for.
+      mutate(Expenses = as.numeric(gsub("[\\$, Dollars]", "", Expenses)),  # Remove '$', ',', and " Dollars"
+             Revenue = as.numeric(gsub("[\\$,]", "", Revenue)),    # Remove '$' and ','
+             Profit = as.numeric(Profit), 
+             Growth = as.numeric(gsub("%", "", Growth))
+  ) %>% 
+  mutate(State = case_when(City == 'San Francisco' ~ 'CA', 
+                           City == 'New York' ~ 'NY', 
+                           TRUE ~ State),  # Keep original State if no match
+         Industry = case_when(Name == 'Techline' ~ 'IT Services', 
+                              Name == 'Cityace' ~ 'Retail', 
+                              TRUE ~ Industry),  # Keep original Industry if no match
+         Expenses = ifelse(is.na(Expenses), Revenue - Profit, Expenses),
+         Inception = ifelse(Name == 'Lathotline', '2011', Inception)) %>% 
+  drop_na()
+#drops NA's for the two construction columns that I cannot infer data for.
 
 # Verify data is tidy:
 #skim(data)
