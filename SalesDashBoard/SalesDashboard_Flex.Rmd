@@ -1,0 +1,95 @@
+---
+title: "Sales Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    runtime: shiny
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+
+# Load Libraries
+library(tidyverse)
+library(zoo)
+library(plotly)
+library(flexdashboard)
+
+# Load Raw Data
+data_raw = read.csv(choose.files())
+
+# Soft Inspect the Data
+head(data_raw)
+tail(data_raw)
+
+# Transform and filter data
+Rev_Data = data_raw %>%  
+  mutate(Unit.Price = as.numeric(str_remove_all(Unit.Price, ",")),
+         Revenue = Order.Quantity * Unit.Price,
+         X_SalesTeamID = factor(X_SalesTeamID),
+         ShipDate = dmy(ShipDate),
+         Quarter = as.yearqtr(ShipDate)) %>%  
+  filter(Sales.Channel %in% c("In-Store", "Online"))
+
+# Define UI for filtering quarters
+quarters <- unique(Rev_Data$Quarter)
+selected_quarters <- reactive({
+  input$quarter_filter
+})
+
+# Filter data based on selected quarters
+filtered_data <- reactive({
+  Rev_Data %>% 
+    filter(Quarter %in% selected_quarters())
+})
+
+```
+
+Row 1 {data-width=650}
+-----------------------------------------------------------------------
+
+### In-Store Sales
+
+```{r, height = 900}
+renderPlotly({
+  filtered_data() %>% 
+    filter(Sales.Channel == "In-Store") %>% 
+    ggplot(aes(x = Quarter, y = Revenue)) +
+    geom_col(fill = "#009E73") +
+    labs(title = "In-Store Sales by Quarter",
+         x = "Quarter",
+         y = "Revenue") +
+    scale_y_continuous(labels = scales::label_dollar()) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+})
+
+```
+
+### Online Sales
+
+```{r}
+renderPlotly({
+  filtered_data() %>% 
+    filter(Sales.Channel == "Online") %>% 
+    ggplot(aes(x = Quarter, y = Revenue)) +
+    geom_col(fill = "#0072B2") +
+    labs(title = "Online Sales by Quarter",
+         x = "Quarter",
+         y = "Revenue") +
+    scale_y_continuous(labels = scales::label_dollar()) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+})
+```
+
+Row 2
+----------------------------------------------------------------------
+### Selection
+
+```{r, height = 300}
+checkboxGroupInput(inputId = "quarter_filter",
+                   label = "Select Quarters:",
+                   choices = quarters,
+                   selected = quarters,
+                   inline = TRUE)
+```
+
