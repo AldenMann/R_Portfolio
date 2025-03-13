@@ -29,8 +29,8 @@ GroupChoices = data %>%
 Inputs {.sidebar}
 -----------------------------------------------------------------------
 ```{r}
-selectInput("FilterBy", "Filter By", choices = "Resource", multiple = F)
-selectInput("FilterValue", "Filter Value", choices = FilterChoiceNames)
+# selectInput("FilterBy", "Filter By", choices = "Resource", multiple = F)
+# selectInput("FilterValue", "Filter Value", choices = FilterChoiceNames)
 selectInput("GroupBy", "Group By", choices = GroupChoices, multiple = F)
 
 ```
