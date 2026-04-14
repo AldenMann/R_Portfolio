@@ -68,17 +68,26 @@ Rev_Data = data_raw %>%
          Quarter = as.yearqtr(ShipDate)) %>% 
   filter(Sales.Channel %in% c("In-Store", "Online"))
 
+# Transform and filter data version 2
+Rev_Data_2 = data_raw %>% 
+  mutate(Unit.Price = as.numeric(str_remove_all(Unit.Price, ",")),
+         Revenue = Order.Quantity * Unit.Price,
+         X_SalesTeamID = factor(X_SalesTeamID),
+         Quarter = quarter(ShipDate, type = "quarter")) %>% 
+  filter(Sales.Channel %in% c("In-Store", "Online"))
+      
+
 # Visualize sales data
-Plot_1 = Rev_Data %>% 
+Plot_1 = Rev_Data_2 %>% 
   ggplot(aes(x = Quarter, y = Revenue)) +
   geom_col(fill = "#009E73") + 
   facet_grid(~Sales.Channel) + 
   labs(title = "Sales by Quarter",
-       subtitle = "In-Store vs Online") + 
+       subtitle = "In-Store vs Online") +
   scale_y_continuous(NULL, labels = scales::label_dollar()) +
-  theme(axis.text.x = element_text(angle = 35, hjust = 1)) + 
-  theme(axis.title.x = element_text(margin = 5.25)) + 
-  theme(axis.title.y.left = element_text(margin = 5))
+  theme(axis.text.x = element_text(angle = 0, hjust = 1)) +
+  theme(axis.title.x = element_text(margin = margin(b = 5.25))) +
+  theme(axis.title.y.left = element_text(margin = margin(l = 5)))
 
-Graph_1 = ggplotly(Plot_1)
+Graph_1 = Plot_1
 

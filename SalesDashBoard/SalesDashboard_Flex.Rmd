@@ -14,6 +14,7 @@ library(tidyverse)
 library(zoo)
 library(plotly)
 library(flexdashboard)
+library(shiny)
 
 # Load Raw Data
 data_raw = read.csv(choose.files())
@@ -28,7 +29,8 @@ Rev_Data = data_raw %>%
          Revenue = Order.Quantity * Unit.Price,
          X_SalesTeamID = factor(X_SalesTeamID),
          ShipDate = dmy(ShipDate),
-         Quarter = as.yearqtr(ShipDate)) %>%  
+         Year = year(ShipDate),
+         Quarter = quarter(ShipDate)) %>%  
   filter(Sales.Channel %in% c("In-Store", "Online"))
 
 # Define UI for filtering quarters
@@ -51,7 +53,7 @@ Row 1 {data-width=650}
 ### In-Store Sales
 
 ```{r, height = 900}
-renderPlotly({
+renderPlot({
   filtered_data() %>% 
     filter(Sales.Channel == "In-Store") %>% 
     ggplot(aes(x = Quarter, y = Revenue)) +
@@ -60,7 +62,9 @@ renderPlotly({
          x = "Quarter",
          y = "Revenue") +
     scale_y_continuous(labels = scales::label_dollar()) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+    theme(axis.title.x = element_text(margin = margin(b = 5.25))) + 
+    theme(axis.title.y = element_text(margin = margin(l = 5)))
 })
 
 ```
@@ -68,7 +72,7 @@ renderPlotly({
 ### Online Sales
 
 ```{r}
-renderPlotly({
+renderPlot({
   filtered_data() %>% 
     filter(Sales.Channel == "Online") %>% 
     ggplot(aes(x = Quarter, y = Revenue)) +

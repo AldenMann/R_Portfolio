@@ -1,0 +1,2 @@
+file_name	organism	url	database	path	refseq_category	assembly_accession	bioproject	biosample	taxid	infraspecific_name	version_status	release_type	genome_rep	seq_rel_date	submitter
+_ncbi_downloads/genomes/Pseudomonas_aeruginosa_genomic_refseq.fna.gz	Pseudomonas aeruginosa	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/006/765/GCF_000006765.1_ASM676v1/GCF_000006765.1_ASM676v1_genomic.fna.gz	refseq	_ncbi_downloads/genomes	reference genome	GCF_000006765.1	PRJNA57945	na	208964	strain=PAO1	latest	Major	Full	2006-07-24	PathoGenesis Corporation
